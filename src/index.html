@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+var timeFormat = 'YYYY-MM-DD HH:mm';
+var dt = {};
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      dt = JSON.parse(this.responseText);
+      var config = {
+        type: 'line',
+        data: {
+          datasets: [{
+            data:  dt,
+            fill:  true,
+            borderColor: 'blue'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            xAxes: [{
+              type: "time",
+              time: {
+                format: timeFormat,
+                tooltipFormat: 'll'
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Date'
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                suggestedMin: 0,
+                beginAtZero: true,
+                suggestedMax: 3000
+              }
+            }]
+          },
+          legend: {
+            display: false
+          }
+        }
+      };
+      var ctx = document.getElementById("canvas").getContext("2d");
+      window.myLine = new Chart(ctx, config);  
+    }
+};
+xmlhttp.open("GET", "data.json", true);
+xmlhttp.send();
+window.onload = function () {};
+</script>
+</body>
+</html>
