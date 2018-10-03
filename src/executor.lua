@@ -73,7 +73,12 @@ do
     
     local function loadData()
       if (file.open("data.json", "r")) then
-        latestMeasurements = sjson.decode(file.read())
+        local content1 = file.read()
+        file.seek("set", 1024)
+        local content2 = file.read()
+        file.seek("set", 2048)
+        local content3 = file.read()
+        latestMeasurements = sjson.decode(content1 .. content2 .. content3)
         file.close()
       end
     end
