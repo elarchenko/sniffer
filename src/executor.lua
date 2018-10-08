@@ -78,7 +78,9 @@ do
         local content2 = file.read()
         file.seek("set", 2048)
         local content3 = file.read()
-        latestMeasurements = sjson.decode(content1 .. content2 .. content3)
+        file.seek("set", 3072)
+        local content4 = file.read()
+        latestMeasurements = sjson.decode(content1 .. content2 .. content3 .. content4)
         file.close()
       end
     end
