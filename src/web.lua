@@ -71,33 +71,40 @@ function receive_http(sck, data)
   request_OK = false
 
   -- if file not specified then send index.html
+  print("Received: ", url_file)
   if url_file == '' then
     sendfile.new(sck, 'index.html')
     request_OK = true
   else
-    local fext=url_file:match("^.+(%..+)$")
-    if fext == '.html' or
-       fext == '.txt' or
-       fext == '.js' or
-       fext == '.json' or
-       fext == '.css' or
-       fext == '.png' or
-       --fext == '.gif' or
-       fext == '.ico' then
-       if file.exists(url_file) then
-           sendfile.new(sck, url_file)
-           request_OK = true
-       end
-    end
-
-    -- execute LUA file
-    -- IT IS HAZARDOUS
-    if fext == '.lua' then
-      if file.exists(url_file) then
-        response=dofile(url_file)
-        sck:on("sent", function() sck:close() end)
-        sck:send(response)
-        request_OK = true
+    if url_file == 'clear' then
+      file.remove('data.json')
+      sendfile.new(sck, 'index.html')
+      request_OK = true
+    else
+      local fext=url_file:match("^.+(%..+)$")
+      if fext == '.html' or
+        fext == '.txt' or
+        fext == '.js' or
+        fext == '.json' or
+        fext == '.css' or
+        fext == '.png' or
+        --fext == '.gif' or
+        fext == '.ico' then
+        if file.exists(url_file) then
+            sendfile.new(sck, url_file)
+            request_OK = true
+        end
+      end
+  
+      -- execute LUA file
+      -- IT IS HAZARDOUS
+      if fext == '.lua' then
+        if file.exists(url_file) then
+          response=dofile(url_file)
+          sck:on("sent", function() sck:close() end)
+          sck:send(response)
+          request_OK = true
+        end
       end
     end
   end
