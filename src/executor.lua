@@ -105,8 +105,13 @@ do
         if (content4 ~= nil) then
           json = json .. content4
         end
-        latestMeasurements = sjson.decode(json)
         file.close()
+        if pcall(sjson.decode(json)) then
+          latestMeasurements = sjson.decode(json)
+        else
+          latestMeasurements = {}
+          file.remove("data.json")
+        end
         print("Measuremets loaded: ", tableSize(latestMeasurements))
       end
     end
